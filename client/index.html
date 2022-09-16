@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    name:<input type="text" name="username"></br>
+    password:<input type="text" name="password"></br>
+    <button onclick="submit()">提交</button>
+    <button onclick="getUsername()">用户</button>
+
+    <script>
+        let token = '';
+        function submit() {
+            let username = document.getElementsByName('username')[0]   //获取按钮
+            let password = document.getElementsByName('password')[0]   //获取按钮
+            ajaxp(username.value, password.value)
+        }
+        function getUsername() {
+            ajaxg()
+        }
+        function ajaxp(username, password) {
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', 'http://localhost:8000/api/login')
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");  //添加请求头，发送urlencoded数据
+            xhr.send(`username=${username}&password=${password}`)
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
+                    token = JSON.parse(xhr.responseText).token   //提取返回值中的token值
+                    console.log(token)   //在控制体打印token
+                }
+            }
+        }
+        function ajaxg() {
+            let xhr = new XMLHttpRequest()
+            xhr.open('GET', 'http://localhost:8000/admin/getinfo')
+            xhr.setRequestHeader("Authorization", `${token}`);   //把token放入请求头中传给后端
+            xhr.send()
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
+                    document.getElementsByTagName('button')[0].innerHTML = xhr.responseText;  //把提交按钮改成传回的报文
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
