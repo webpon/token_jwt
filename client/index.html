@@ -39,7 +39,6 @@
         function ajaxg() {
             let xhr = new XMLHttpRequest()
             xhr.open('GET', 'http://localhost:8000/admin/getinfo')
-            xhr.setRequestHeader("Authorization", `${token}`);   //把token放入请求头中传给后端
             xhr.send()
             xhr.onreadystatechange = function () {
                 if (xhr.readyState === 4 && xhr.status >= 200 && xhr.status < 300) {
